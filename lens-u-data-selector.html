@@ -69,12 +69,12 @@ A Thelma component providing solution to no problem in particular.
         {name: 'label', type: 'any', multi: false},
         {name: 'value', type: 'numerical', multi: true}
       ],
-      /*
+      
       observe: {
-        input: "_stateChanged",
-        numOfSelections: "_stateChanged"        
+        // input: "_getDefaultSelections"
+        // numOfSelections: "_stateChanged"        
       },
-      */
+      
       ready: function() {
         var self = this;
         self.selections = ['',''];
@@ -118,7 +118,7 @@ A Thelma component providing solution to no problem in particular.
       },
       _getDefaultSelections: function(){
         var self = this,
-            columns = Object.keys(self.input[0]);          
+            columns = self.input ? Object.keys(self.input[0]) : [];          
                         
         self.selectionSettings.forEach(function(dp, i) {
           if(dp.type !=='numerical') {
