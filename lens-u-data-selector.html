@@ -118,11 +118,16 @@ A Thelma component providing solution to no problem in particular.
       },
       _getDefaultSelections: function(){
         var self = this,
-            columns = Object.keys(self.input[0]);
+            columns = Object.keys(self.input[0]);          
                         
         self.selectionSettings.forEach(function(dp, i) {
           if(dp.type !=='numerical') {
-            self.selections[i] = columns[i];
+            if (dp.multi){
+              self.selections[i] = [columns[i]];  // if it is multi selection, selections need to be in an array
+            } else {
+              self.selections[i] = columns[i];  
+            }
+            
           }
           else {
             self.selections[i] = columns.filter(function(key, index) {
@@ -130,7 +135,7 @@ A Thelma component providing solution to no problem in particular.
             });
           }
         });
-        
+
         self.fire('th-data-selection-changed');
       },
 
