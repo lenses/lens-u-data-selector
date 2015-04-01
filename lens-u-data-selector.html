@@ -108,21 +108,20 @@ A Thelma component providing solution to no problem in particular.
       inputChanged: function() {
         this._extractAttributes();
 
-
         var attrsEqual = this.$.data_utility.arraysEqual(this._dataAttributes, this._prevDataAttributes);
 
         // if attributes are not equal AND selections are similar to previous attributes (to avoid race conditions when recreating lens)
-        if(!attrsEqual && this._prevDataAttributes.indexOf(this.selections[0])>-1) {
+        if(!this.selections[0] || !attrsEqual && this._prevDataAttributes.indexOf(this.selections[0])>-1) {
           this._getDefaultSelections();
-        }
+        } 
       },
       _getDefaultSelections: function(){
         var self = this,
-            columns = self.input ? Object.keys(self.input[0]) : [];          
-                        
+            columns = self.input && self.input.length ? Object.keys(self.input[0]) : [];          
+                 
         self.selectionSettings.forEach(function(dp, i) {
           if(dp.type !=='numerical') {
-            if (dp.multi){
+            if (dp.multi && columns.length){
               self.selections[i] = [columns[i]];  // if it is multi selection, selections need to be in an array
             } else {
               self.selections[i] = columns[i];  
@@ -132,13 +131,12 @@ A Thelma component providing solution to no problem in particular.
           else {
             self.selections[i] = columns.filter(function(key, index) {
               return self.isEligible(key,1) && index <= (dp.max || 1000);
-            });
+            })[0];
           }
         });
 
         self.fire('th-data-selection-changed');
       },
-
       isEligible: function(attr,index) {
         var self = this;
         if(self.selectionSettings[index] && self.selectionSettings[index].type==='numerical') {
