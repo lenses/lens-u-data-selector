@@ -131,7 +131,7 @@ A Thelma component providing solution to no problem in particular.
           else {
             self.selections[i] = columns.filter(function(key, index) {
               return self.isEligible(key,1) && index <= (dp.max || 1000);
-            })[0];
+            });
           }
         });
 
