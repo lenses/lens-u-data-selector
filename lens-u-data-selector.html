@@ -50,6 +50,10 @@ A Thelma component providing solution to no problem in particular.
             </label>
               
             <core-selector id="value_selector" selected="{{selections[index]}}" valueattr="label" multi="{{sel.multi}}">
+                <template if="{{sel.optional}}">
+                  <div class="col" label="none">none</div>
+                </template>
+
                 <template repeat="{{attr in _dataAttributes}}">
                   <template if="{{attr | isEligible(index)}}">
                     <div class="col" label="{{attr}}">{{attr}}</div>
