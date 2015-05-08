@@ -81,7 +81,10 @@ A Thelma component providing solution to no problem in particular.
       
       ready: function() {
         var self = this;
-        // self.selections = ['','']; // This overrides any selections passed into component
+        // If there are pre-existing selections which are valid, keep those, otherwise set to array of empty strings
+        if (!(self.selections && self.selections[0])){
+          self.selections =  ['',''];
+        }
         
         self._extractAttributes(true);
 
