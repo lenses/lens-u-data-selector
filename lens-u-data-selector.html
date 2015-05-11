@@ -71,7 +71,7 @@ A Thelma component providing solution to no problem in particular.
       selections: ['',''],
       selectionSettings: [
         {name: 'label', type: 'any', multi: false},
-        {name: 'value', type: 'numerical', multi: true}
+        {name: 'value', type: 'numerical', multi: true, excludeUsed: false}
       ],
       
       observe: {
@@ -138,7 +138,7 @@ A Thelma component providing solution to no problem in particular.
           else {
             self.selections[i] = columns.filter(function(key, index) {
               // eligible & smaller than max & key not used before is excludeUsed flag is true
-              return self.isEligible(key,1) && index <= (dp.max || 1000) && (dp.excludeUsed && !self.alreadyUsed(key, i));
+              return self.isEligible(key,1) && index <= (dp.max || 1000) && !(dp.excludeUsed && self.alreadyUsed(key, i));
             });
           }
         });
@@ -162,7 +162,7 @@ A Thelma component providing solution to no problem in particular.
         }
 
       }
-      
+
 
     });
   </script>
