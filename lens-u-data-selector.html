@@ -137,7 +137,8 @@ A Thelma component providing solution to no problem in particular.
           }
           else {
             self.selections[i] = columns.filter(function(key, index) {
-              return self.isEligible(key,1) && index <= (dp.max || 1000);
+              // eligible & smaller than max & key not used before is excludeUsed flag is true
+              return self.isEligible(key,1) && index <= (dp.max || 1000) && (dp.excludeUsed && !self.alreadyUsed(key, i));
             });
           }
         });
@@ -152,7 +153,16 @@ A Thelma component providing solution to no problem in particular.
         }
         
         return true;
+      },
+      alreadyUsed: function(key, currentIndex) {
+        for(var i=0; i<currentIndex; i++) {
+          if(this.selections[i] && this.selections[i].indexOf(key)>-1) {
+            return true;
+          }
+        }
+
       }
+      
 
     });
   </script>
