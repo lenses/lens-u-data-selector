@@ -147,7 +147,11 @@ A Thelma component providing solution to no problem in particular.
       },
       isEligible: function(attr,index) {
         var self = this;
+        // TEMPORARILY ALWAYS RETURN TRUE UNTIL ISCOLUMNNUMERIC IS FIXED
+        return true; 
+          
         if(self.selectionSettings[index] && self.selectionSettings[index].type==='numerical') {
+          // TODO: make isColumnNumeric less strict before reimplementing
           var num =  self.$.data_utility.isColumnNumeric(self.input, attr );
           return num;
         }
