@@ -1,5 +1,5 @@
 <link rel="import" href="../polymer/polymer.html"> 
-<link rel="import" href="../core-selector/core-selector.html"> 
+<link rel="import" href="../iron-selector/iron-selector.html"> 
 <link rel="import" href="../lens-u-data-utility/lens-u-data-utility.html"> 
 
 <!--
@@ -15,23 +15,23 @@ A Thelma component providing solution to no problem in particular.
 @homepage http://thelmanews.github.io/lens-u-data-selector
 -->
 
-<polymer-element name="lens-u-data-selector" attributes="input selectionSettings selections ">
+<dom-module id="lens-u-data-selector">
   <template>
     <style>
-        core-selector {
+        iron-selector {
           min-height: 10px;
           display: inline-block;
           max-height: 123px;
           overflow-y: scroll; 
         }
 
-        core-selector .col {
+        iron-selector .col {
           display: inline-block;
           margin: 0 3px;
           padding: 1px;
           border: 1px solid #EEE;
         }
-        core-selector .core-selected {
+        iron-selector .core-selected {
           background-color: #ccc;
 
         }
@@ -49,7 +49,7 @@ A Thelma component providing solution to no problem in particular.
              {{sel.name}}: 
             </label>
               
-            <core-selector id="value_selector" selected="{{selections[index]}}" valueattr="label" multi="{{sel.multi}}">
+            <iron-selector id="value_selector" selected="{{selections[index]}}" valueattr="label" multi="{{sel.multi}}">
                 <template if="{{sel.optional}}">
                   <div class="col" label="none">none</div>
                 </template>
@@ -59,7 +59,7 @@ A Thelma component providing solution to no problem in particular.
                     <div class="col" label="{{attr}}">{{attr}}</div>
                   </template>
                 </template>
-            </core-selector>
+            </iron-selector>
           
           </div>
         </template>
@@ -68,15 +68,32 @@ A Thelma component providing solution to no problem in particular.
   </template>
   <script>
     Polymer({
-      selections: ['',''],
-      selectionSettings: [
-        {name: 'label', type: 'any', multi: false},
-        {name: 'value', type: 'numerical', multi: true, excludeUsed: true}
-      ],
-      
-      observe: {
-        // input: "_getDefaultSelections"
-        // numOfSelections: "_stateChanged"        
+      is: "lens-u-data-selector",	    
+      properties: {
+        /**
+         *  Input data
+         *
+         *  @property input
+         *  @type Array
+         *  @default []
+         */
+        input: {
+          type: Array,
+          value: [],
+          observer: "_inputChanged"
+        },
+        selections: {
+          type: Array,
+          value: ['','']
+        },
+        selectionSettings: 
+          type: Array,
+          value: 
+          [
+            {name: 'label', type: 'any', multi: false},
+            {name: 'value', type: 'numerical', multi: true, excludeUsed: true}
+          ]
+        }
       },
       
       ready: function() {
@@ -112,7 +129,7 @@ A Thelma component providing solution to no problem in particular.
 
 
       },
-      inputChanged: function() {
+      _inputChanged: function() {
         this._extractAttributes();
 
         var attrsEqual = this.$.data_utility.arraysEqual(this._dataAttributes, this._prevDataAttributes);
@@ -170,4 +187,4 @@ A Thelma component providing solution to no problem in particular.
 
     });
   </script>
-</polymer-element>
+</dom-module>
