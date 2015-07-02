@@ -16,8 +16,7 @@ A Thelma component providing solution to no problem in particular.
 -->
 
 <dom-module id="lens-u-data-selector">
-  <template>
-    <style>
+  <style>
         iron-selector {
           min-height: 10px;
           display: inline-block;
@@ -31,31 +30,29 @@ A Thelma component providing solution to no problem in particular.
           padding: 1px;
           border: 1px solid #EEE;
         }
-        iron-selector .core-selected {
+        iron-selector .iron-selected {
           background-color: #ccc;
 
         }
         label {
           vertical-align: top;
         }
-    </style>
+  </style>
+  <template>
     <lens-u-data-utility id="data_utility"></lens-u-data-utility>
-
-    <template if="{{_dataAttributes}}">
+    <template is="dom-if" if="{{_dataAttributes}}">
       <div class="columnNames">
-        <template repeat="{{sel, index in selectionSettings}}">
+        <template is="dom-repeat" items="{{selectionSettings}}" as="sel" index-as="index">
           <div>
-            <label>
-             {{sel.name}}: 
-            </label>
+            <label>{{sel.name}}</label>
               
             <iron-selector id="value_selector" selected="{{selections[index]}}" valueattr="label" multi="{{sel.multi}}">
-                <template if="{{sel.optional}}">
+                <template is="dom-if" if="{{sel.optional}}">
                   <div class="col" label="none">none</div>
                 </template>
 
-                <template repeat="{{attr in _dataAttributes}}">
-                  <template if="{{attr | isEligible(index)}}">
+		<template is="dom-repeat" items="{{_dataAttributes}}" as="attr">
+                  <template is="dom-if" if="{{attr | isEligible(index)}}">
                     <div class="col" label="{{attr}}">{{attr}}</div>
                   </template>
                 </template>
@@ -86,7 +83,7 @@ A Thelma component providing solution to no problem in particular.
           type: Array,
           value: ['','']
         },
-        selectionSettings: 
+	selectionSettings: { 
           type: Array,
           value: 
           [
@@ -98,7 +95,8 @@ A Thelma component providing solution to no problem in particular.
       
       ready: function() {
         var self = this;
-        // If there are pre-existing selections which are valid, keep those, otherwise set to array of empty strings
+	console.log('ready',self.selections);
+	// If there are pre-existing selections which are valid, keep those, otherwise set to array of empty strings
         if (!(self.selections && self.selections[0])){
           self.selections =  ['',''];
         }
@@ -110,8 +108,8 @@ A Thelma component providing solution to no problem in particular.
         }
 
 
-        self.addEventListener('core-select', function() {
-          self.fire('th-data-selection-changed');
+        self.addEventListener('iron-select', function() {
+          //self.fire('lens-selection-changed', self.selections);
         }.bind(self));
       },
       _extractAttributes: function() {
@@ -130,12 +128,17 @@ A Thelma component providing solution to no problem in particular.
 
       },
       _inputChanged: function() {
-        this._extractAttributes();
+
+	if(!this.selections) {
+	  return;
+	}
+	this._extractAttributes();
 
         var attrsEqual = this.$.data_utility.arraysEqual(this._dataAttributes, this._prevDataAttributes);
 
         // if attributes are not equal AND selections are similar to previous attributes (to avoid race conditions when recreating lens)
-        if(!this.selections[0] || !attrsEqual && this._prevDataAttributes.indexOf(this.selections[0])>-1) {
+	console.log(this.input, this.selections);
+	if(!this.selections[0] || !attrsEqual && this._prevDataAttributes.indexOf(this.selections[0])>-1) {
           this._getDefaultSelections();
         } 
       },
@@ -159,8 +162,9 @@ A Thelma component providing solution to no problem in particular.
             });
           }
         });
+        console.log('made selections', self.selections);
 
-        self.fire('th-data-selection-changed');
+        self.fire('lens-selection-changed', self.selections);
       },
       isEligible: function(attr,index) {
         var self = this;
