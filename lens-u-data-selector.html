@@ -46,7 +46,7 @@ A Thelma component providing solution to no problem in particular.
           <div>
             <label>{{sel.name}}</label>
               
-            <iron-selector id="value_selector" selected="{{selections[index]}}" valueattr="label" multi="{{sel.multi}}">
+	    <iron-selector myindex="{{index}}" attr-for-selected="label" multi="{{sel.multi}}">
                 <template is="dom-if" if="{{sel.optional}}">
                   <div class="col" label="none">none</div>
                 </template>
@@ -108,8 +108,13 @@ A Thelma component providing solution to no problem in particular.
         }
 
 
-        self.addEventListener('iron-select', function() {
-          //self.fire('lens-selection-changed', self.selections);
+        self.addEventListener('iron-select', function(e) {
+		console.log('ironselect', self.selections);
+		console.log(e, e.srcElement.selected,  e.srcElement.myindex);
+		var selectorIndex = e.srcElement.myindex;
+		console.log('selectorIndex', selectorIndex);
+		self.selections[selectorIndex] = e.srcElement.selected;
+		self.fire('lens-selection-changed', self.selections);
         }.bind(self));
       },
       _extractAttributes: function() {
