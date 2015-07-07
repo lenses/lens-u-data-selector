@@ -46,7 +46,7 @@ A Thelma component providing solution to no problem in particular.
           <div>
             <label>{{sel.name}}</label>
               
-	    <iron-selector myindex="{{index}}" attr-for-selected="label" multi="{{sel.multi}}">
+	    <iron-selector class="selector" myindex="{{index}}" attr-for-selected="label" multi="{{sel.multi}}">
                 <template is="dom-if" if="{{sel.optional}}">
                   <div class="col" label="none">none</div>
                 </template>
@@ -95,8 +95,7 @@ A Thelma component providing solution to no problem in particular.
       
       ready: function() {
         var self = this;
-	console.log('ready',self.selections);
-	// If there are pre-existing selections which are valid, keep those, otherwise set to array of empty strings
+	      // If there are pre-existing selections which are valid, keep those, otherwise set to array of empty strings
         if (!(self.selections && self.selections[0])){
           self.selections =  ['',''];
         }
@@ -109,13 +108,11 @@ A Thelma component providing solution to no problem in particular.
 
 
         self.addEventListener('iron-select', function(e) {
-		console.log('ironselect', self.selections);
-		console.log(e, e.srcElement.selected,  e.srcElement.myindex);
-		var selectorIndex = e.srcElement.myindex;
-		console.log('selectorIndex', selectorIndex);
-		self.selections[selectorIndex] = e.srcElement.selected;
-		self.fire('lens-selection-changed', self.selections);
-        }.bind(self));
+           self._selectorChanged(e);
+        });
+        self.addEventListener('iron-deselect', function(e) {
+           self._selectorChanged(e);
+        });
       },
       _extractAttributes: function() {
         var self = this;
@@ -142,7 +139,6 @@ A Thelma component providing solution to no problem in particular.
         var attrsEqual = this.$.data_utility.arraysEqual(this._dataAttributes, this._prevDataAttributes);
 
         // if attributes are not equal AND selections are similar to previous attributes (to avoid race conditions when recreating lens)
-	console.log(this.input, this.selections);
 	if(!this.selections[0] || !attrsEqual && this._prevDataAttributes.indexOf(this.selections[0])>-1) {
           this._getDefaultSelections();
         } 
@@ -167,7 +163,23 @@ A Thelma component providing solution to no problem in particular.
             });
           }
         });
-        console.log('made selections', self.selections);
+
+        setTimeout(function() {
+        var selectors = Polymer.dom(self.root).querySelectorAll('.selector');
+        //set selections for iron-selectors
+        [].forEach.call(selectors, function(selector) {
+          var index = selector.myindex;
+          if(selector.multi===false) {
+            selector.selected = self.selections[index];
+          }
+          else {
+            selector.selectedValues = self.selections[index];
+          }
+
+        });
+          
+
+      }, 500);
 
         self.fire('lens-selection-changed', self.selections);
       },
@@ -191,9 +203,14 @@ A Thelma component providing solution to no problem in particular.
           }
         }
 
+      },
+
+      _selectorChanged: function(e) {
+        var self = this;
+        var selectorIndex = e.srcElement.myindex;
+		        self.selections[selectorIndex] = e.srcElement.selected || e.srcElement.selectedValues;
+		        self.fire('lens-selection-changed', self.selections);
       }
-
-
     });
   </script>
 </dom-module>
