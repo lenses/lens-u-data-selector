@@ -131,15 +131,15 @@ A Thelma component providing solution to no problem in particular.
       },
       _inputChanged: function() {
 
-	if(!this.selections) {
-	  return;
-	}
-	this._extractAttributes();
+      	if(!this.selections) {
+      	  return;
+      	}
+      	this._extractAttributes();
 
         var attrsEqual = this.$.data_utility.arraysEqual(this._dataAttributes, this._prevDataAttributes);
 
         // if attributes are not equal AND selections are similar to previous attributes (to avoid race conditions when recreating lens)
-	if(!this.selections[0] || !attrsEqual && this._prevDataAttributes.indexOf(this.selections[0])>-1) {
+	      if(!this.selections[0] || !attrsEqual && this._prevDataAttributes.indexOf(this.selections[0])>-1) {
           this._getDefaultSelections();
         } 
       },
